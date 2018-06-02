@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="Author Name,name@example.com"><title>详解JDK8中的@CallerSensitive与反射机制 · Jung's Blog</title><meta name="description" content="&amp;emsp;&amp;emsp;在JDK8包中，新增了一个注解，名为：@CallerSensitive，这个注解位于sun包中，是一个为JVM提供的注解。
-&amp;emsp;&amp;emsp;在sun.reflect包中，Reflection类为我们提供了一个方法getCallerClass()，用于获取直接调用类，当"><meta name="keywords" content="Hexo,HTML,CSS,android,Linux"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">Jung's Blog</a></h3><div class="description"><p>Nothing lasts forever.</p></div></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a href="https://www.caicai.me"> CaiCai </a><span>&</span><a href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img src="/images/favicon.png"></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>详解JDK8中的@CallerSensitive与反射机制</a></h3></div><div class="post-content"><p>&emsp;&emsp;在JDK8包中，新增了一个注解，名为：@CallerSensitive，这个注解位于sun包中，是一个为JVM提供的注解。</p>
+&amp;emsp;&amp;emsp;在sun.reflect包中，Reflection类为我们提供了一个方法getCallerClass()，用于获取直接调用类，当"><meta name="keywords" content="Hexo,HTML,CSS,android,Linux"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">Jung's Blog</a></h3><div class="description"><p>Nothing lasts forever.</p></div></div></div><ul class="social-links"></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a href="https://www.caicai.me"> CaiCai </a><span>&</span><a href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">Home</a></li><li><a href="/about">Sobre</a></li><li><a href="/archives">Arquivo</a></li><li><a href="/links">Links</a></li></div><div class="information"><div class="back_btn"><li><a class="fa fa-chevron-left" onclick="window.history.go(-1)"> </a></li></div><div class="avatar"><img src="/images/favicon.png"></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page"><div class="post animated fadeInDown"><div class="post-title"><h3><a>详解JDK8中的@CallerSensitive与反射机制</a></h3></div><div class="post-content"><p>&emsp;&emsp;在JDK8包中，新增了一个注解，名为：@CallerSensitive，这个注解位于sun包中，是一个为JVM提供的注解。</p>
 <p>&emsp;&emsp;在sun.reflect包中，Reflection类为我们提供了一个方法getCallerClass()，用于获取直接调用类，当我们想自己用这个方法时，便有了如下代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@CallerSensitive</span><br><span class="line">   public void test()&#123;</span><br><span class="line">       System.out.println(Reflection.getCallerClass());</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@CallerSensitive</span><br><span class="line">public void test()&#123;</span><br><span class="line">    System.out.println(Reflection.getCallerClass());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>&emsp;&emsp;在运行时，控制台却抛出了如下异常</p>
 <pre><code>Exception in thread &quot;main&quot; java.lang.InternalError: CallerSensitive annotation expected at frame 1
 </code></pre><p>&emsp;&emsp;意味着这个方法需要在方法上用@CallerSensitive修饰才能使用，但是实际上这样做是无效的，因为在对@CallerSensitive进行定义时，只允许从如下的加载器中进行读取：</p>
@@ -18,4 +18,75 @@
 <pre><code>外部Class-&gt;用户类-&gt;存钱的方法(银行处理类)-&gt;加钱
 </code></pre><p>&emsp;&emsp;这就造成了一个不正常的调用，为了保护反射链，JVM就创造出了@CallerSensitive注解，为了保护JAVA中的某些方法。在Reflection.getCallerClass()时，获取方法的调用者时，会跳过标注了@CallerSensitive注解的方法。</p>
 <p>&emsp;&emsp;例如在存钱的方法上和用户类的方法上加入了@CallerSensitive，而最终加钱的方法上加入Reflection.getCallerClass()来进行调用者的判断。第一种方式得到的类是用户类本身，而第二种方法则是被Hack的那个类，进行权限的判断相对而言也就简单了。</p>
-</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2018-05-31</span><i class="fa fa-tag"></i><a class="tag" href="/categories/学习/" title="学习">学习 </a><a class="tag" href="/tags/Java/" title="Java">Java </a><a class="tag" href="/tags/反射/" title="反射">反射 </a><a class="tag" href="/tags/Java-8/" title="Java 8">Java 8 </a></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" href="http://twitter.com/home?status=,http://jung.ren/2018/05/31/详解JDK8中的-CallerSensitive与反射机制/,Jung's Blog,详解JDK8中的@CallerSensitive与反射机制,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="next pagbuttons"><a class="btn" role="navigation" href="/2018/05/30/解决采用官方示例搭建GITLAB时发生的502异常/" title="解决采用官方示例搭建GITLAB时发生的502异常">下一篇</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>
+<p>以上是博主本人的解释，其实，早在13年2月份，JEP就曾出过一份相关的文档<a href="http://openjdk.java.net/jeps/176" target="_blank" rel="noopener">JEP176</a>，以下是文章中英文对照：</p>
+<pre><code>JEP 176: Mechanical Checking of Caller-Sensitive Methods
+Authors    John Rose, Christian Thalinger, Mandy Chung
+Owner    John Rose
+Created    2013/02/05 20:00
+Updated    2017/10/17 22:53
+Type    Feature
+Status    Closed / Delivered
+Scope    JDK
+Discussion    core dash libs dash dev at openjdk dot java dot net
+Effort    S
+Priority    4
+Reviewed by    Alan Bateman, Sean Mullan
+Endorsed by    Brian Goetz
+Release    8
+Issue    8046166
+
+
+    Summary
+    Improve the security of the JDK&apos;s method-handle implementation by replacing the existing hand-maintained list of caller-sensitive methods with a mechanism that accurately identifies such methods and allows their callers to be discovered reliably.
+
+    通过准确地识别这些方法并允许可靠地发现其调用方的机制来提高JDK的方法处理的实现的安全性。
+
+    Non-Goals
+    The proposed @CallerSensitive annotation may be useful for other types of analyses or audits, but such activities are beyond the scope of this JEP.
+
+    It is also not a goal to provide a public API for non-system code.
+
+    所提出的@CallerSensitive注解对于其他类型的分析或审计可能是有用的，但这些行为超出了JEP的范围。并且@CallerSensitive也不会为非系统级别的代码提供API
+
+    Description
+    A caller-sensitive method varies its behavior according to the class of its immediate caller. It discovers its caller&apos;s class by invoking the sun.reflect.Reflection.getCallerClass method.
+    一个对调用者敏感的方法根据其直接调用方的类来改变其行为。它通过调用sun.reflect.Reflection.getCallerClass方法来发现其调用方的类。
+
+    Most caller-sensitive methods act in some way as an agent for the caller. When invoked via reflection, these methods must be handled specially in order to ensure that the class of the actual caller, rather than some class of the reflection mechanism itself, is returned by the getCallerClass method. The logic for doing this involves pattern matching against a hand-maintained list of caller-sensitive methods, which is brittle and difficult to maintain.
+    大多数对调用者敏感的方法以某种方式充当调用方的代理。当通过反射调用时，必须特别处理这些方法，以确保实际调用的类，不是通过反射机制产生的类，并且得知实际调用者的方法应由getCallerClass方法返回。这样做涉及到与对于调用者敏感方法的手工维护列表相匹配的模式，同时也很弱且难以维护。
+
+    To improve on this we will mark all caller-sensitive methods in the JDK with the internal annotation @sun.reflect.CallerSensitive. The JVM will track this annotation and, optionally, enforce the invariant that the sun.reflect.Reflection.getCallerClass method can only report the caller of a method when that method is marked with this annotation. The JVM will set a new caller-sensitive bit when resolving a MemberName, and the package-private method java.lang.invoke.MethodHandleNatives.isCallerSensitive will be upgraded to query it directly rather than consult a list of method names.
+    为了改进这一点，我们将用内部注释 @sun.reflect.CallerSensitive标记JDK中的所有调用方敏感方法。JVM将跟踪此注释，并增强sun.reflect.Reflection.getCallerClass方法的不变性，使该方法仅在调用者拥有@CallerSensitive注解时才会告知其调用者。JVM在解析成员名称时将新设置一个用于标记对调用者敏感的标志位，并且包私有方法java.lang.invoke.MethodHandleNatives.isCallerSensitive将被升级为直接查询这个标记位，而不是查阅方法名表。
+
+    The @CallerSensitive annotation might be useful for other purposes, such as tracking the introduction of new caller-sensitive methods or providing similar special handling in the sun.reflect.misc.MethodUtil.invoke method.
+    @CallerSensitive还可能用于其他目的，例如跟踪新的对调用者敏感的方法的引入或在sun.reflect.misc.MethodUtil.invoke方法中提供类似的特殊处理。
+
+    There are two places in the JDK where methods examine stack frames beyond their immediate callers. We propose the following changes in order to enforce the caller-sensitivity check reliably:
+    如下是JDK的两个检查栈帧直接调用者的方法，我们打算为了增强方法调用者敏感检查的可靠性而做了一些改变：
+
+    1.Deprecate the SecurityManager.checkMemberAccess method, with a view to changing it to throw an exception unconditionally in a future release. The checkMemberAccess method requires the caller&apos;s frame to be at a stack depth of four, which is fragile and difficult to enforce.
+    废弃SecurityManager.checkMemberAccess方法，以改变它在未来版本中无条件抛出异常。这个方法要求调用方的帧处于堆栈深度为四，出于这个原因，很难被增强。
+
+    2.Revise java.util.logging.Logger not to walk the stack in search of a resource bundle. This stack walk was intended as a temporary measure to allow containers to transition to using the context class loader. It is already specified to be removed in a future release.
+    修改java.util.logging.Logger 不去为了寻找资源包而遍历栈。因为这个遍历栈的操作的旨在允许容器迁移到使用上下文类的加载器中的一个临时措施。它已被指定在未来的版本中被删除。
+
+    Alternatives
+    Add the @CallerSensitive annotation, as described above, but use it only to validate the hand-maintained method list. This alternative would be an improvement, but checking the annotation at runtime is more reliable.
+    综上所述，添加@CallerSensitive 注解，但仅使用它来验证手动维护的方法列表。这种改进使得在运行时检查这个注解更加可靠。
+
+    Testing
+    Existing test suites will serve well as positive test cases for this feature. New negative test cases are required to identify caller-sensitive methods that are not properly marked.
+    现有的测试套件将在用作这个特性的测试用例时表现的很好。需要新的逆向测试用例来识别那些对于调用者敏感的方法有没有被正确标记。
+
+    Risks and Assumptions
+    There is a small risk that this change will cause side effects. We assume that the already-planned extensive testing of JDK 8 will uncover any such issues.
+    这种变化会造成副作用的风险很小。我们假定在已经安排JDK 8的测试会发现这样做的问题。
+
+    Impact
+    Performance: We expect negligible performance impact. The JVM is already parsing runtime method annotations for JSR 292 and the check will be relatively cheap compared to the expensive stack-walk operation.
+    性能：我们期望可以忽略的性能影响。JVM对于JSR 292已经可以解析运行时的方法注释，并且和遍历栈来比，这种开销相对而言代价低。
+
+    Compatibility: Applications that depend upon the stack-walking behavior of the Logger class will no longer work.
+    兼容性：依赖于遍历栈行为的Logger类的应用将不再工作。
+</code></pre><p>本文禁止转载，如有问题请联系<a href="mailto:zhiguo.li@jung.ren">zhiguo.li@jung.ren</a></p>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2018-05-31</span><i class="fa fa-tag"></i><a class="tag" href="/categories/学习/" title="学习">学习 </a><a class="tag" href="/tags/Java/" title="Java">Java </a><a class="tag" href="/tags/反射/" title="反射">反射 </a><a class="tag" href="/tags/Java-8/" title="Java 8">Java 8 </a></div></div></div></div><div class="share"><div class="evernote"><a class="fa fa-bookmark" href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank"></a></div><div class="weibo"><a class="fa fa-weibo" href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));"></a></div><div class="twitter"><a class="fa fa-twitter" href="http://twitter.com/home?status=,http://jung.ren/2018/05/31/详解JDK8中的-CallerSensitive与反射机制/,Jung's Blog,详解JDK8中的@CallerSensitive与反射机制,;"></a></div></div><div class="pagination"><ul class="clearfix"><li class="next pagbuttons"><a class="btn" role="navigation" href="/2018/05/30/解决采用官方示例搭建GITLAB时发生的502异常/" title="解决采用官方示例搭建GITLAB时发生的502异常">Próximo post</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>
